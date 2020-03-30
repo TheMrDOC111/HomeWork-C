@@ -22,7 +22,7 @@ safe_c_array_t<T>::~safe_c_array_t() {
 
 
 template<class T>
-T safe_c_array_t<T>::operator[](int index) const {
+const T safe_c_array_t<T>::operator[](int index) const {
     if (index < 0 || index >= _size) {
         std::cout << "Out of bounds";
         exit(-1);

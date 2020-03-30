@@ -15,7 +15,7 @@ public:
 
     ~safe_c_array_t();
 
-    T operator[](int index) const;
+    const T operator[](int index) const;
 
     void operator=(const safe_c_array_t &data);
 
