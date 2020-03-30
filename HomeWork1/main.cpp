@@ -9,13 +9,13 @@
 using namespace std;
 
 double f(double x) {
-    return sin(x);
+    return -x * x -0.5;
 }
 
 double EPS = 0.0000001;
 
 int main() {
-    freopen("laba.out", "w", stdout);
+    freopen("g3.out", "w", stdout);
 
     int n, m;
     double x0, x1;
