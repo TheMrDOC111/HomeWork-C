@@ -9,6 +9,9 @@ int_list_t::int_list_t() {
 }
 
 int_list_t::~int_list_t() {
+    clear();
+    delete get_head();
+    delete get_tail();
 }
 
 size_t int_list_t::size() const {
@@ -72,16 +75,6 @@ int_list_t::node_t *int_list_t::get(int pos) const {
 
 }
 
-//int_list_t::node_t* int_list_t::prev(const int_list_t::node_t* node)
-//{
-//    return !is_reversed ? node->prev : node->next;
-//}
-//
-//int_list_t::node_t* int_list_t::next(const int_list_t::node_t* node)
-//{
-//    return !is_reversed ? node->next : node->prev;
-//}
-
 void int_list_t::insert(size_t pos, int new_val) {
     if (!is_reversed) {
         node_t *pointer = get(pos);
@@ -130,13 +123,10 @@ void int_list_t::pop_front() {
 }
 
 void int_list_t::pop_back() {
-    erase(size() - 1);
+    reverse();
+    erase(0);
+    reverse();
 }
-
-//int_list_t& int_list_t::merge(int_list_t& other)
-//{
-//    return <#initializer#>;
-//}
 
 int_list_t::int_list_t(const int_list_t &other) {
     _size = other.size();
@@ -156,14 +146,15 @@ int_list_t::int_list_t(const int_list_t &other) {
 }
 
 int_list_t::int_list_t(size_t count, int value) {
-    int_list_t list = int_list_t();
-    head = list.head;
-    tail = list.tail;
-    is_reversed = list.is_reversed;
-    _size = count;
+    head = new node_t(-1, nullptr, nullptr);
+    tail = new node_t(-2, head, nullptr);
+    head->next = tail;
+    is_reversed = false;
+    _size = 0;
     for (int i = 0; i < count; ++i) {
         push_back(value);
     }
+
 }
 
 int_list_t &int_list_t::operator=(const int_list_t &other) {
@@ -212,24 +203,80 @@ std::ostream &operator<<(std::ostream &stream, const int_list_t &list) {
 }
 
 int_list_t int_list_t::splice(size_t start_pos, size_t count) {
-    auto list = int_list_t();
-    auto pointer = get(start_pos);
-    auto h = list.get_head();
-    for (int i = 0; i < count; ++i) {
-        h->set_next(false, pointer);
-        h = h->get_next(false);
-        pointer = pointer->get_next(is_reversed);
-    }
+    int_list_t new_list;
+    new_list.is_reversed = is_reversed;
+    node_t *pointer = get_head();
 
-    list._size = count;
-    return list;
+    for (int i = 0; i < start_pos + 1; ++i)
+        pointer = pointer->get_next(is_reversed);
+
+    node_t *prev_p = pointer->get_prev(is_reversed);
+
+    new_list.get_head()->set_next(is_reversed, pointer);
+
+    for (int i = 0; i < count - 1; ++i)
+        pointer = pointer->get_next(is_reversed);
+
+    new_list.get_tail()->set_prev(is_reversed, pointer);
+
+    node_t *next_p = pointer->get_next(is_reversed);
+
+    prev_p->set_next(is_reversed, next_p);
+    next_p->set_prev(is_reversed, prev_p);
+
+    _size -= count;
+    new_list._size = count;
+
+    return new_list;
 }
 
 std::istream &operator>>(std::istream &stream, int_list_t &list) {
     int tmp = 0;
     list.clear();
-    while(stream >> tmp) {
+    while (stream >> tmp) {
         list.push_back(tmp);
     }
     return stream;
 }
+
+
+int_list_t &int_list_t::merge(int_list_t &other) {
+    if (is_reversed == other.is_reversed) {
+        get_tail()->get_prev(is_reversed)->set_next(is_reversed, other.get_head()->get_next(is_reversed));
+        other.get_tail()->get_prev(is_reversed)->set_next(is_reversed, get_tail());
+        other.get_head()->set_next(is_reversed, other.get_tail());
+        other.get_tail()->set_prev(is_reversed, other.get_head());
+        _size += other.size();
+        other._size = 0;
+        return *this;
+    }
+    if (is_reversed) {
+        true_revers();
+        get_tail()->get_prev(is_reversed)->set_next(is_reversed, other.get_head()->get_next(is_reversed));
+        other.get_tail()->get_prev(is_reversed)->set_next(is_reversed, get_tail());
+        other.get_head()->set_next(is_reversed, other.get_tail());
+        other.get_tail()->set_prev(is_reversed, other.get_head());
+        _size += other.size();
+        other._size = 0;
+        return *this;
+    }
+    return *this;
+}
+
+void int_list_t::true_revers() {
+//    is_reversed = false;
+//    node_t *tmp = head->next;
+//    node_t *pointer = head->next;
+//    node_t *new_tmp;
+//
+//    for (int i = 0; i < size(); ++i) {
+//        new_tmp = pointer->prev;
+//        pointer->prev = pointer->next;
+//        pointer->next = new_tmp;
+//        pointer = pointer->prev;
+//    }
+//    head->next = tail->prev;
+//    tail->prev = tmp;
+
+}
+

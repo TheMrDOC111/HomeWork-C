@@ -56,6 +56,7 @@ private:
 
 
 public:
+    void true_revers();
     int_list_t(); // O(1)
     int_list_t(const int_list_t &other); // COPY $other list O(other.size)
     int_list_t(size_t count, int value); // create list $count size and fill it with $value O($count)
@@ -76,8 +77,8 @@ public:
     size_t size() const; // O(1)
     bool empty() const; // O(1)
 
-    void insert(size_t pos, int new_val); // insert element $new_val BEFORE element with index $pos O(min($pos, size
-    // - $pos))
+    void insert(size_t pos,
+                int new_val); // insert element $new_val BEFORE element with index $pos O(min($pos, size  - $pos))
     void push_front(int new_val); // O(1)
     void push_back(int new_val);    // O(1)
 
