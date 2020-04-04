@@ -54,9 +54,10 @@ private:
 
     node_t *get(int pos) const;
 
+    void true_revers();
+
 
 public:
-    void true_revers();
     int_list_t(); // O(1)
     int_list_t(const int_list_t &other); // COPY $other list O(other.size)
     int_list_t(size_t count, int value); // create list $count size and fill it with $value O($count)

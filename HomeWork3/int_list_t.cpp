@@ -65,6 +65,8 @@ int_list_t::node_t *int_list_t::get(int pos) const {
 
         return pointer;
     } else {
+        pos = pos - size() +1;
+        pos = abs(pos);
         node_t *pointer = get_tail();
         do {
             pointer = pointer->get_prev(is_reversed);
@@ -152,7 +154,7 @@ int_list_t::int_list_t(size_t count, int value) {
     is_reversed = false;
     _size = 0;
     for (int i = 0; i < count; ++i) {
-        push_back(value);
+        push_front(value);
     }
 
 }
@@ -241,42 +243,57 @@ std::istream &operator>>(std::istream &stream, int_list_t &list) {
 
 
 int_list_t &int_list_t::merge(int_list_t &other) {
-    if (is_reversed == other.is_reversed) {
-        get_tail()->get_prev(is_reversed)->set_next(is_reversed, other.get_head()->get_next(is_reversed));
-        other.get_tail()->get_prev(is_reversed)->set_next(is_reversed, get_tail());
-        other.get_head()->set_next(is_reversed, other.get_tail());
-        other.get_tail()->set_prev(is_reversed, other.get_head());
-        _size += other.size();
-        other._size = 0;
-        return *this;
+    if (this != &other) {
+        if (is_reversed == other.is_reversed) {
+            get_tail()->get_prev(is_reversed)->set_next(is_reversed, other.get_head()->get_next(is_reversed));
+            other.get_head()->get_next(is_reversed)->set_prev(is_reversed, get_tail()->get_prev(is_reversed));
+            get_tail()->set_prev(is_reversed, other.get_tail()->get_prev(is_reversed));
+            other.get_tail()->get_prev(is_reversed)->set_next(is_reversed, get_tail());
+            other.get_head()->set_next(is_reversed, other.get_tail());
+            other.get_tail()->set_prev(is_reversed, other.get_head());
+            _size += other.size();
+            other._size = 0;
+            return *this;
+        } else if (is_reversed) {
+            true_revers();
+            get_tail()->get_prev(is_reversed)->set_next(is_reversed, other.get_head()->get_next(is_reversed));
+            other.get_head()->get_next(is_reversed)->set_prev(is_reversed, get_tail()->get_prev(is_reversed));
+            get_tail()->set_prev(is_reversed, other.get_tail()->get_prev(is_reversed));
+            other.get_tail()->get_prev(is_reversed)->set_next(is_reversed, get_tail());
+            other.get_head()->set_next(is_reversed, other.get_tail());
+            other.get_tail()->set_prev(is_reversed, other.get_head());
+            _size += other.size();
+            other._size = 0;
+            return *this;
+        } else {
+            other.true_revers();
+            get_tail()->get_prev(is_reversed)->set_next(is_reversed, other.get_head()->get_next(is_reversed));
+            other.get_head()->get_next(is_reversed)->set_prev(is_reversed, get_tail()->get_prev(is_reversed));
+            get_tail()->set_prev(is_reversed, other.get_tail()->get_prev(is_reversed));
+            other.get_tail()->get_prev(is_reversed)->set_next(is_reversed, get_tail());
+            other.get_head()->set_next(is_reversed, other.get_tail());
+            other.get_tail()->set_prev(is_reversed, other.get_head());
+            _size += other.size();
+            other._size = 0;
+        }
     }
-    if (is_reversed) {
-        true_revers();
-        get_tail()->get_prev(is_reversed)->set_next(is_reversed, other.get_head()->get_next(is_reversed));
-        other.get_tail()->get_prev(is_reversed)->set_next(is_reversed, get_tail());
-        other.get_head()->set_next(is_reversed, other.get_tail());
-        other.get_tail()->set_prev(is_reversed, other.get_head());
-        _size += other.size();
-        other._size = 0;
         return *this;
-    }
-    return *this;
 }
 
 void int_list_t::true_revers() {
-//    is_reversed = false;
-//    node_t *tmp = head->next;
-//    node_t *pointer = head->next;
-//    node_t *new_tmp;
-//
-//    for (int i = 0; i < size(); ++i) {
-//        new_tmp = pointer->prev;
-//        pointer->prev = pointer->next;
-//        pointer->next = new_tmp;
-//        pointer = pointer->prev;
-//    }
-//    head->next = tail->prev;
-//    tail->prev = tmp;
+    is_reversed = false;
+    node_t *tmp = head->next;
+    node_t *pointer = head->next;
+    node_t *new_tmp;
 
+    while (pointer != tail) {
+        new_tmp = pointer->next;
+        std::swap(pointer->prev, pointer->next);
+        pointer = new_tmp;
+    }
+    head->next = tail->prev;
+    head->next->prev = head;
+    tail->prev = tmp;
+    tail->prev->next = tail;
 }
 
