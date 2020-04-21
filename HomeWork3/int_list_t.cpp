@@ -30,6 +30,7 @@ void int_list_t::swap(int_list_t &other) {
     std::swap(head, other.head);
     std::swap(tail, other.tail);
     std::swap(is_reversed, other.is_reversed);
+    std::swap(_size, other._size);
 }
 
 int_list_t::node_t *int_list_t::get_head() const {
@@ -65,7 +66,7 @@ int_list_t::node_t *int_list_t::get(int pos) const {
 
         return pointer;
     } else {
-        pos = pos - size() +1;
+        pos = pos - size() + 1;
         pos = abs(pos);
         node_t *pointer = get_tail();
         do {
@@ -130,51 +131,23 @@ void int_list_t::pop_back() {
     reverse();
 }
 
-int_list_t::int_list_t(const int_list_t &other) {
-    _size = other.size();
-    head = new node_t(0, nullptr, nullptr);
-    node_t *pointer = other.head;
-    node_t *prev = head;
-    for (int i = 0; i < _size; ++i) {
-        node_t *new_node = new node_t(pointer->next->value, prev, nullptr);
-        prev->next = new_node;
-        prev = new_node;
-        pointer = pointer->next;
-    }
-    tail = new node_t(0, prev, nullptr);
-    prev->next = tail;
-
+int_list_t::int_list_t(const int_list_t &other) : int_list_t() {
     is_reversed = other.is_reversed;
+    for (int i = 0; i < other._size; i++) {
+        push_back(other.get(i)->value);
+    }
 }
 
-int_list_t::int_list_t(size_t count, int value) {
-    head = new node_t(-1, nullptr, nullptr);
-    tail = new node_t(-2, head, nullptr);
-    head->next = tail;
-    is_reversed = false;
-    _size = 0;
+int_list_t::int_list_t(size_t count, int value) : int_list_t() {
     for (int i = 0; i < count; ++i) {
         push_front(value);
     }
-
 }
 
 int_list_t &int_list_t::operator=(const int_list_t &other) {
     if (this != &other) {
-        clear();
-        node_t *pointer = other.head;
-        node_t *prev = head;
-        _size = other._size;
-        for (int i = 0; i < _size; ++i) {
-            node_t *new_node = new node_t(pointer->next->value, prev, nullptr);
-            prev->next = new_node;
-            prev = new_node;
-            pointer = pointer->next;
-        }
-        tail->prev = prev;
-        prev->next = tail;
-
-        is_reversed = other.is_reversed;
+        int_list_t tmp(other);
+        swap(tmp);
     }
     return *this;
 }
@@ -192,6 +165,7 @@ void int_list_t::clear() {
     }
     head->next = tail;
     tail->prev = head;
+    _size = 0;
 }
 
 std::ostream &operator<<(std::ostream &stream, const int_list_t &list) {
@@ -209,15 +183,17 @@ int_list_t int_list_t::splice(size_t start_pos, size_t count) {
     new_list.is_reversed = is_reversed;
     node_t *pointer = get_head();
 
-    for (int i = 0; i < start_pos + 1; ++i)
+    for (int i = 0; i < start_pos + 1; ++i) {
         pointer = pointer->get_next(is_reversed);
+    }
 
     node_t *prev_p = pointer->get_prev(is_reversed);
 
     new_list.get_head()->set_next(is_reversed, pointer);
 
-    for (int i = 0; i < count - 1; ++i)
+    for (int i = 0; i < count - 1; ++i) {
         pointer = pointer->get_next(is_reversed);
+    }
 
     new_list.get_tail()->set_prev(is_reversed, pointer);
 
@@ -277,7 +253,7 @@ int_list_t &int_list_t::merge(int_list_t &other) {
             other._size = 0;
         }
     }
-        return *this;
+    return *this;
 }
 
 void int_list_t::true_revers() {
