@@ -145,7 +145,6 @@ void int_list_t::pop_back() {
 }
 
 int_list_t::int_list_t(const int_list_t &other) : int_list_t() {
-    std::cout << "!!!" << std::endl;
     is_reversed = other.is_reversed;
     auto pointer = other.get_head();
     pointer = pointer->get_next(other.is_reversed);
@@ -209,6 +208,7 @@ int_list_t int_list_t::splice(size_t start_pos, size_t count) {
 
     node_t *prev_p = pointer->get_prev(is_reversed);
 
+
     new_list.get_head()->set_next(is_reversed, pointer);
     pointer->set_prev(is_reversed, new_list.get_head());
 
@@ -219,17 +219,19 @@ int_list_t int_list_t::splice(size_t start_pos, size_t count) {
     }
 
     new_list.get_tail()->set_prev(is_reversed, pointer);
+    node_t *next_p = pointer->get_next(is_reversed);
+
+
+
     pointer->set_next(is_reversed, new_list.get_tail());
 
-    node_t *next_p = pointer->get_next(is_reversed);
+
 
     prev_p->set_next(is_reversed, next_p);
     next_p->set_prev(is_reversed, prev_p);
 
     _size -= count;
     new_list._size = count;
-    std::cout << "<><><>" << std::endl;
-
     return new_list;
 }
 

@@ -6,11 +6,10 @@ int main() {
     for (int i = 0; i < 10; ++i) {
         l1.push_back(i);
     }
-    std::cout << l1 << std::endl;
-    l1.splice(1, 5);
-    int k = l1.size();
+    int_list_t l2 = l1.splice(1, 5);
 
-//    std::cout << l2 << std::endl;
+    std::cout << l1 << std::endl;
+    std::cout << l2 << std::endl;
 
 
 
