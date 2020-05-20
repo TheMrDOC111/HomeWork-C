@@ -17,11 +17,11 @@ int main() {
   player1->print_stat();
   player2->print_stat();
 
-/*  auto player1 = std::make_shared<computer_strategy_t>("First player");
-  auto player2 = std::make_shared<human_strategy_t>();
+//  auto player1 = std::make_shared<computer_strategy_t>("First player");
+//  auto player2 = std::make_shared<human_strategy_t>();
 
   game_t game(player1, player2);
-  game.play();*/
+  game.play();
 
   return 0;
 }
