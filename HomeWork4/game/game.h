@@ -20,11 +20,12 @@ private:
     IN_PROGRESS
   };
 
-  bool is_win_line(int x, int y, int dx, int dy) const;
   game_outcome_t is_win() const;
-  bool apply_step(const step_t &step, size_t player_num);
+  bool apply_select_step(const step_t &step, size_t player_num);
+  bool apply_move_step(const step_t &select_step, const step_t &move_step, size_t player_num);
 
   field_t field;
   std::vector<player_t> players;
+  size_t counter_steps;
 };
 

@@ -5,63 +5,52 @@ game_t::game_t(const player_t &first, const player_t &second) : field() {
     players.push_back(second);
 }
 
-bool game_t::apply_step(const step_t &step, size_t player_num) {
+bool game_t::apply_select_step(const step_t &step, size_t player_num) {
     char &cell = field.fld[step.x - 1][step.y - 1];
-    if (cell != '.') {
+    if (cell == '.') {
         return false;
     }
-    if (player_num == 0) {
-        cell = '#';
-    } else {
-        cell = '0';
+    std::cout << player_num << " - target checker: " << cell << std::endl;
+    if (player_num == 0 && (cell == 'w' || cell == 'W')) {
+        return true;
+    } else if (player_num == 1 && (cell == 'b' || cell == 'B')) {
+        return true;
     }
-    return true;
+    return false;
 }
-
-bool game_t::is_win_line(int x, int y, int dx, int dy) const {
-    char c = field.fld[x][y];
-    if (c == '.') {
-        return false;
-    }
-    for (int i = 0; i < 3; ++i) {
-        if (c != field.fld[x + i * dx][y + i * dy]) {
-            return false;
-        }
-    }
-    return true;
-}
-
 game_t::game_outcome_t game_t::is_win() const {
-    for (int i = 0; i < 3; ++i) {
-        if (is_win_line(0, i, 1, 0) || is_win_line(i, 0, 0, 1)) {
-            return WIN;
-        }
+
+    if (counter_steps > 1000) {
+        return TIE;
     }
-    if (is_win_line(0, 0, 1, 1) || is_win_line(0, 2, 1, -1)) {
+
+    if (players[0]->checkers == 0 || players[1]->checkers == 0) {
         return WIN;
+
     }
-    for (auto line : field.fld) {
-        for (int j = 0; j < 3; ++j) {
-            if (line[j] == '.') {
-                return IN_PROGRESS;
-            }
-        }
-    }
-    return TIE;
+    return IN_PROGRESS;
 }
 
 void game_t::play() {
     size_t counter = 1;
+    counter_steps = 0;
     while (is_win() == IN_PROGRESS) {
         counter = (counter + 1) % 2;
         bool is_correct = false;
         while (!is_correct) {
-            step_t step = players[counter]->make_step(field);
-            is_correct = apply_step(step, counter);
+            step_t select_step = players[counter]->select_step(field);
+            is_correct = apply_select_step(select_step, counter);
             if (!is_correct) {
-                players[counter]->on_incorrect_step(step);
+                players[counter]->on_incorrect_select_step(select_step);
+                continue;
+            }
+            step_t move_step = players[counter]->make_step(field);
+            is_correct = apply_move_step(select_step, move_step, counter);
+            if (!is_correct) {
+                players[counter]->on_incorrect_move_step(move_step);
             }
         }
+        ++counter_steps;
     }
 
     if (is_win() == TIE) {
@@ -78,4 +67,16 @@ void game_t::play() {
             players[i]->on_lose();
         }
     }
+}
+
+bool game_t::apply_move_step(const step_t &select_step, const step_t &move_step, size_t player_num) {
+    char &cell = field.fld[move_step.x - 1][move_step.y - 1];
+    if (cell == '0') {
+
+
+
+        std::swap(field.fld[select_step.x - 1][select_step.y - 1], field.fld[move_step.x - 1][move_step.y - 1]);
+        return true;
+    }
+    return false;
 }

@@ -10,7 +10,8 @@ public:
   void on_lose() override;
   void on_tie() override;
 
-  void on_incorrect_step(const step_t &step) const override;
+  void on_incorrect_select_step(const step_t &step) const override;
+  void on_incorrect_move_step(const step_t &step) const override;
 
   virtual void print_stat() const;
 
