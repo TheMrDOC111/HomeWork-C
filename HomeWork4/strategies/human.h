@@ -1,5 +1,4 @@
 #pragma once
-
 #include "interface.h"
 
 class human_strategy_t : public strategy_interface_t {
