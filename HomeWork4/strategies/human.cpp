@@ -15,7 +15,7 @@ void human_strategy_t::on_tie() {
 }
 
 step_t human_strategy_t::make_step(const field_t &fld) {
-    std::cout << "Type coordinates: " << std::endl;
+    std::cout << "Type coordinates to move: " << std::endl;
     int x, y;
     std::cin >> x >> y;
     return {x, y};
@@ -36,8 +36,12 @@ step_t human_strategy_t::select_step(const field_t &field) {
     return {x, y};
 }
 
-
-
+step_t human_strategy_t::attack_step(const field_t &field) {
+    std::cout << "Type coordinates to attack: " << std::endl;
+    int x, y;
+    std::cin >> x >> y;
+    return {x, y};
+}
 
 human_strategy_t::human_strategy_t() {
     checkers = 12;
@@ -49,5 +53,9 @@ void human_strategy_t::on_incorrect_move_step(const step_t &step) const {
 
 void human_strategy_t::on_incorrect_select_step(const step_t &step) const {
     std::cout << "Incorrect select step: x: " << step.x << "; y: " << step.y << std::endl;
+}
+
+void human_strategy_t::on_incorrect_attack_step(const step_t &step) const {
+    std::cout << "Incorrect attack step: x: " << step.x << "; y: " << step.y << std::endl;
 }
 
