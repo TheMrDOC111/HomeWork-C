@@ -99,14 +99,14 @@ bool game_t::apply_move_step(const step_t &select_step, const step_t &target_ste
     if (target_cell == '0') {
         if (select_cell == 'w') {
             if ((target_step.x == select_step.x - 1) &&
-                ((select_step.y + 1 == target_step.y) || (select_step.y - 1 == target_step.y))){
+                ((select_step.y + 1 == target_step.y) || (select_step.y - 1 == target_step.y))) {
                 std::swap(target_cell, select_cell);
                 return true;
             }
         }
         if (select_cell == 'b') {
             if ((target_step.x == select_step.x + 1) &&
-                ((select_step.y + 1 == target_step.y) || (select_step.y - 1 == target_step.y))){
+                ((select_step.y + 1 == target_step.y) || (select_step.y - 1 == target_step.y))) {
                 std::swap(target_cell, select_cell);
                 return true;
             }
@@ -132,7 +132,7 @@ void game_t::check_checkers(std::set<std::pair<int, int>> &checkers,
                                 must_hit_checkers.insert(std::pair<int, int>(i - 1, j - 1));
                             }
                         }
-                        if (j + 2 >= 0) {
+                        if (j + 2 < 8) {
                             if ((field.fld[i - 1][j + 1] == 'b' || field.fld[i - 1][j + 1] == 'B') &&
                                 (field.fld[i - 2][j + 2] == '0')) {
                                 checkers.insert(std::pair<int, int>(i, j));
@@ -141,13 +141,29 @@ void game_t::check_checkers(std::set<std::pair<int, int>> &checkers,
                         }
                     }
                 }
+
             }
         }
     } else {
         for (int i = 0; i < 8; ++i) {
             for (int j = 0; j < 8; ++j) {
                 if (field.fld[i][j] == 'b') {
-
+                    if (i + 2 < 8) {
+                        if (j - 2 >= 0) {
+                            if ((field.fld[i + 1][j - 1] == 'w' || field.fld[i + 1][j - 1] == 'W') &&
+                                (field.fld[i + 2][j - 2] == '0')) {
+                                checkers.insert(std::pair<int, int>(i, j));
+                                must_hit_checkers.insert(std::pair<int, int>(i + 1, j - 1));
+                            }
+                        }
+                        if (j + 2 < 8) {
+                            if ((field.fld[i + 1][j + 1] == 'w' || field.fld[i - 1][j + 1] == 'W') &&
+                                (field.fld[i + 2][j + 2] == '0')) {
+                                checkers.insert(std::pair<int, int>(i, j));
+                                must_hit_checkers.insert(std::pair<int, int>(i + 1, j + 1));
+                            }
+                        }
+                    }
                 }
             }
         }
