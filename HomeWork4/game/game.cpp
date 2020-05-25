@@ -9,8 +9,8 @@ game_t::game_t(const player_t &first, const player_t &second) : field() {
 
 bool
 game_t::apply_select_step(const step_t &step, std::set<std::pair<int, int>> &checkers, size_t player_num) {
-    char &cell = field.fld[step.x - 1][step.y - 1];
-    if (cell == '.' || (checkers.count(std::pair<int, int>(step.x - 1, step.y - 1)) == 0 && !checkers.empty())) {
+    char &cell = field.fld[step.r - 1][step.c - 1];
+    if (cell == '.' || (checkers.count(std::pair<int, int>(step.r - 1, step.c - 1)) == 0 && !checkers.empty())) {
         return false;
     }
     std::cout << player_num << " - target checker: " << cell << std::endl;
@@ -44,8 +44,8 @@ void game_t::play() {
     while (is_win() == IN_PROGRESS) {
         counter = (counter + 1) % 2;
         bool is_correct = false;
-        check_checkers(compulsory_checkers, compulsory_hit_checkers, counter);
         while (!is_correct) {
+            check_checkers(compulsory_checkers, compulsory_hit_checkers, counter);
             std::cout << "Must hit size - " << compulsory_checkers.size() << std::endl;
             step_t select_step = players[counter]->select_step(field);
             is_correct = apply_select_step(select_step, compulsory_checkers, counter);
@@ -63,7 +63,7 @@ void game_t::play() {
                 // Туть цикл для проверки шашек которые мы обязаны побить одной выбранной шашкой
                 while (!compulsory_hit_checkers.empty()) {
                     step_t attack_step = players[counter]->attack_step(field);
-                    is_correct = apply_attack_step(select_step, attack_step, counter);
+                    is_correct = apply_attack_step(select_step, attack_step, compulsory_hit_checkers, counter);
                     if (!is_correct) {
                         players[counter]->on_incorrect_attack_step(attack_step);
                         continue;
@@ -72,7 +72,6 @@ void game_t::play() {
                 }
                 // туть конец цикла
             }
-
         }
         ++counter_steps;
     }
@@ -94,25 +93,48 @@ void game_t::play() {
 }
 
 bool game_t::apply_move_step(const step_t &select_step, const step_t &target_step, size_t player_num) {
-    char &target_cell = field.fld[target_step.x - 1][target_step.y - 1];
-    char &select_cell = field.fld[select_step.x - 1][select_step.y - 1];
+    char &target_cell = field.fld[target_step.r - 1][target_step.c - 1];
+    char &select_cell = field.fld[select_step.r - 1][select_step.c - 1];
     if (target_cell == '0') {
         if (select_cell == 'w') {
-            if ((target_step.x == select_step.x - 1) &&
-                ((select_step.y + 1 == target_step.y) || (select_step.y - 1 == target_step.y))) {
+            if ((target_step.r == select_step.r - 1) &&
+                ((select_step.c + 1 == target_step.c) || (select_step.c - 1 == target_step.c))) {
                 std::swap(target_cell, select_cell);
                 return true;
             }
         }
         if (select_cell == 'b') {
-            if ((target_step.x == select_step.x + 1) &&
-                ((select_step.y + 1 == target_step.y) || (select_step.y - 1 == target_step.y))) {
+            if ((target_step.r == select_step.r + 1) &&
+                ((select_step.c + 1 == target_step.c) || (select_step.c - 1 == target_step.c))) {
                 std::swap(target_cell, select_cell);
                 return true;
             }
         }
 
     }
+    return false;
+}
+
+bool game_t::apply_attack_step(const step_t &select_step, const step_t &attack_step,
+                               std::set<std::pair<int, int>> &must_hit_checkers, size_t player_num) {
+    char &attack_cell = field.fld[attack_step.r - 1][attack_step.c - 1];
+    char &select_cell = field.fld[select_step.r - 1][select_step.c - 1];
+    int count = 0;
+    if (attack_cell == '0') {
+        if (player_num == 0) {
+            if (select_cell == 'w') {
+                if (must_hit_checkers.count(std::pair<int, int>(select_step.r - 2, select_step.c - 2)) &&
+                    select_step.r - 3 == attack_step.r - 1 && select_step.c - 3 == attack_step.c - 1) {
+                    players[1]->checkers -= 1;
+                    field.fld[select_step.r - 2][select_step.c - 2] = '0';
+                    std::swap(attack_cell, select_cell);
+                    return true;
+                }
+                //Дописать код для всех вариаций
+            }
+        }
+    }
+
     return false;
 }
 
@@ -171,6 +193,4 @@ void game_t::check_checkers(std::set<std::pair<int, int>> &checkers,
 
 }
 
-bool game_t::apply_attack_step(const step_t &select_step, const step_t &attack_step, size_t player_num) {
-    return false;
-}
+

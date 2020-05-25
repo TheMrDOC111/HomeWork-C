@@ -4,11 +4,11 @@
 #include <iostream>
 
 struct step_t {
-    step_t(int x, int y) :
-            x{x},
-            y{y} {}
+    step_t(int r, int c) :
+            r{r},
+            c{c} {}
 
-    int x, y;
+    int r, c;
 };
 
 struct field_t {

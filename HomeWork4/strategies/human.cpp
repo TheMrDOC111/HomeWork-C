@@ -53,14 +53,14 @@ human_strategy_t::human_strategy_t() {
 }
 
 void human_strategy_t::on_incorrect_move_step(const step_t &step) const {
-    std::cout << "Incorrect move step: row: " << step.x << "; col: " << step.y << std::endl;
+    std::cout << "Incorrect move step: row: " << step.r << "; col: " << step.c << std::endl;
 }
 
 void human_strategy_t::on_incorrect_select_step(const step_t &step) const {
-    std::cout << "Incorrect select step: row: " << step.x << "; col: " << step.y << std::endl;
+    std::cout << "Incorrect select step: row: " << step.r << "; col: " << step.c << std::endl;
 }
 
 void human_strategy_t::on_incorrect_attack_step(const step_t &step) const {
-    std::cout << "Incorrect attack step: row: " << step.x << "; col: " << step.y << std::endl;
+    std::cout << "Incorrect attack step: row: " << step.r << "; col: " << step.c << std::endl;
 }
 

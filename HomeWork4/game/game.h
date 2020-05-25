@@ -29,7 +29,8 @@ private:
 
     bool apply_move_step(const step_t &select_step, const step_t &target_step, size_t player_num);
 
-    bool apply_attack_step(const step_t &select_step, const step_t &attack_step, size_t player_num);
+    bool apply_attack_step(const step_t &select_step, const step_t &attack_step,
+                           std::set<std::pair<int, int>> &must_hit_checkers, size_t player_num);
 
     void check_checkers(std::set<std::pair<int, int>> &checkers,
                         std::set<std::pair<int, int>> &must_hit_checkers,
