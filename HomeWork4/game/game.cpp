@@ -46,7 +46,6 @@ void game_t::play() {
         bool is_correct = false;
         while (!is_correct) {
             check_checkers(compulsory_checkers, compulsory_hit_checkers, counter);
-            std::cout << "Must hit size - " << compulsory_checkers.size() << std::endl;
             step_t select_step = players[counter]->select_step(field);
             is_correct = apply_select_step(select_step, compulsory_checkers, counter);
             if (!is_correct) {
@@ -99,6 +98,9 @@ bool game_t::apply_move_step(const step_t &select_step, const step_t &target_ste
         if (select_cell == 'w') {
             if ((target_step.r == select_step.r - 1) &&
                 ((select_step.c + 1 == target_step.c) || (select_step.c - 1 == target_step.c))) {
+                if (target_step.r - 1 == 0) {
+                    select_cell = 'W';
+                }
                 std::swap(target_cell, select_cell);
                 return true;
             }
@@ -106,6 +108,9 @@ bool game_t::apply_move_step(const step_t &select_step, const step_t &target_ste
         if (select_cell == 'b') {
             if ((target_step.r == select_step.r + 1) &&
                 ((select_step.c + 1 == target_step.c) || (select_step.c - 1 == target_step.c))) {
+                if (target_step.r - 1 == 7) {
+                    select_cell = 'B';
+                }
                 std::swap(target_cell, select_cell);
                 return true;
             }
@@ -127,14 +132,49 @@ bool game_t::apply_attack_step(const step_t &select_step, const step_t &attack_s
                     select_step.r - 3 == attack_step.r - 1 && select_step.c - 3 == attack_step.c - 1) {
                     players[1]->checkers -= 1;
                     field.fld[select_step.r - 2][select_step.c - 2] = '0';
+                    if (select_step.r - 1 == 0) {
+                        attack_cell = 'W';
+                    }
                     std::swap(attack_cell, select_cell);
                     return true;
                 }
-                //Дописать код для всех вариаций
+                if (must_hit_checkers.count(std::pair<int, int>(select_step.r - 2, select_step.c)) &&
+                    select_step.r - 3 == attack_step.r - 1 && select_step.c + 1 == attack_step.c - 1) {
+                    players[1]->checkers -= 1;
+                    field.fld[select_step.r - 2][select_step.c] = '0';
+                    if (select_step.r - 1 == 0) {
+                        attack_cell = 'W';
+                    }
+                    std::swap(attack_cell, select_cell);
+                    return true;
+                }
+            }
+        } else {
+            if (select_cell == 'b') {
+                if (must_hit_checkers.count(std::pair<int, int>(select_step.r - 1 + 1, select_step.c - 1 - 1)) &&
+                    select_step.r - 1 + 2 == attack_step.r - 1 && select_step.c - 3 == attack_step.c - 1) {
+                    players[0]->checkers -= 1;
+                    field.fld[select_step.r - 1 + 1][select_step.c - 2] = '0';
+                    if (select_step.r - 1 == 7) {
+                        attack_cell = 'B';
+                    }
+                    std::swap(attack_cell, select_cell);
+                    return true;
+                }
+                if (must_hit_checkers.count(std::pair<int, int>(select_step.r - 1 + 1, select_step.c - 1 + 1)) &&
+                    select_step.r - 1 + 2 == attack_step.r - 1 && select_step.c + 1 == attack_step.c - 1) {
+                    players[0]->checkers -= 1;
+                    field.fld[select_step.r][select_step.c] = '0';
+                    if (select_step.r - 1 == 7) {
+                        attack_cell = 'B';
+                    }
+                    std::swap(attack_cell, select_cell);
+                    return true;
+                }
             }
         }
     }
-
+    //Дописать код для всех вариаций
     return false;
 }
 
