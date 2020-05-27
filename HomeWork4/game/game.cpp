@@ -115,6 +115,23 @@ bool game_t::apply_move_step(const step_t &select_step, const step_t &target_ste
             }
         }
 
+        if (select_cell == 'W') {
+            if (target_step.r + target_step.c == select_step.c + select_step.r ||
+                abs(target_step.r - target_step.c) == abs(select_step.c - select_step.r)) {
+                std::swap(target_cell, select_cell);
+                return true;
+            }
+        }
+
+        if (select_cell == 'B') {
+            if (target_step.r + target_step.c == select_step.c + select_step.r ||
+                abs(target_step.r - target_step.c) == abs(select_step.c - select_step.r)) {
+                std::swap(target_cell, select_cell);
+                return true;
+            }
+        }
+
+
     }
     return false;
 }
