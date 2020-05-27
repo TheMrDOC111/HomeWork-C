@@ -1,5 +1,4 @@
 #include <memory>
-
 #include "game/game.h"
 #include "strategies/human.h"
 #include "strategies/computer.h"
@@ -17,8 +16,8 @@ int main() {
 //  player1->print_stat();
 //  player2->print_stat();
 
-  auto player1 = std::make_shared<human_strategy_t>();
-  auto player2 = std::make_shared<human_strategy_t>();
+  auto player1 = std::make_shared<human_strategy_t>("Player 1");
+  auto player2 = std::make_shared<human_strategy_t>("Player 2");
 
   game_t game(player1, player2);
   game.play();

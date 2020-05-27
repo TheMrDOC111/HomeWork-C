@@ -1,10 +1,12 @@
 #pragma once
 
+#include <string>
+
 #include "interface.h"
 
 class human_strategy_t : public strategy_interface_t {
 public:
-    human_strategy_t();
+    human_strategy_t(std::string name);
 
     step_t select_step(const field_t &field) override;
 
@@ -23,4 +25,7 @@ public:
     void on_lose() override;
 
     void on_tie() override;
+
+private:
+    std::string name;
 };

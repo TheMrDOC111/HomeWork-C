@@ -13,7 +13,6 @@ game_t::apply_select_step(const step_t &step, std::set<std::pair<int, int>> &che
     if (cell == '.' || (checkers.count(std::pair<int, int>(step.r - 1, step.c - 1)) == 0 && !checkers.empty())) {
         return false;
     }
-    std::cout << player_num << " - target checker: " << cell << std::endl;
     if (player_num == 0 && (cell == 'w' || cell == 'W')) {
         return true;
     } else if (player_num == 1 && (cell == 'b' || cell == 'B')) {
