@@ -21,12 +21,10 @@ struct field_t {
                 }
                 if (row < 3) {
                     fld[row][col] = 'b';
-                }
-                if (row > 2 && row < 5) {
-                    fld[row][col] = '0';
-                }
-                if (row > 4) {
+                } else if (row > 4) {
                     fld[row][col] = 'w';
+                } else {
+                    fld[row][col] = '0';
                 }
             }
         }

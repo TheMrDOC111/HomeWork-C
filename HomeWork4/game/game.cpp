@@ -144,8 +144,8 @@ bool game_t::apply_attack_step(step_t &select_step, step_t &attack_step,
                     select_step.r - 3 == attack_step.r - 1 && select_step.c - 3 == attack_step.c - 1) {
                     players[1]->checkers -= 1;
                     field.fld[select_step.r - 2][select_step.c - 2] = '0';
-                    if (select_step.r - 1 == 0) {
-                        attack_cell = 'W';
+                    if (attack_step.r - 1 == 0) {
+                        select_cell = 'W';
                     }
                     std::swap(attack_cell, select_cell);
                     std::swap(select_step, attack_step);
@@ -155,8 +155,8 @@ bool game_t::apply_attack_step(step_t &select_step, step_t &attack_step,
                     select_step.r - 3 == attack_step.r - 1 && select_step.c + 1 == attack_step.c - 1) {
                     players[1]->checkers -= 1;
                     field.fld[select_step.r - 2][select_step.c] = '0';
-                    if (select_step.r - 1 == 0) {
-                        attack_cell = 'W';
+                    if (attack_step.r - 1 == 0) {
+                        select_cell = 'W';
                     }
                     std::swap(attack_cell, select_cell);
                     std::swap(select_step, attack_step);
@@ -326,8 +326,8 @@ bool game_t::apply_attack_step(step_t &select_step, step_t &attack_step,
                     select_step.c - 3 == attack_step.c - 1) { // левый нижний
                     players[0]->checkers -= 1;
                     field.fld[select_step.r - 1 + 1][select_step.c - 2] = '0';
-                    if (select_step.r - 1 == 7) {
-                        attack_cell = 'B';
+                    if (attack_step.r - 1 == 7) {
+                        select_cell = 'B';
                     }
                     std::swap(attack_cell, select_cell);
                     std::swap(select_step, attack_step);
@@ -338,8 +338,8 @@ bool game_t::apply_attack_step(step_t &select_step, step_t &attack_step,
                     select_step.c + 1 == attack_step.c - 1) { // правый нижний
                     players[0]->checkers -= 1;
                     field.fld[select_step.r][select_step.c] = '0';
-                    if (select_step.r - 1 == 7) {
-                        attack_cell = 'B';
+                    if (attack_step.r - 1 == 7) {
+                        select_cell = 'B';
                     }
                     std::swap(attack_cell, select_cell);
                     std::swap(select_step, attack_step);
