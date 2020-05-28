@@ -1,5 +1,4 @@
 #include "game.h"
-#include <unordered_set>
 #include <set>
 
 game_t::game_t(const player_t &first, const player_t &second) : field() {
@@ -44,7 +43,7 @@ void game_t::play() {
         counter = (counter + 1) % 2;
         bool is_correct = false;
         while (!is_correct) {
-            check_checkers(compulsory_checkers, compulsory_hit_checkers, counter);
+            check_all_checkers(compulsory_checkers, compulsory_hit_checkers, counter);
             step_t select_step = players[counter]->select_step(field);
             is_correct = apply_select_step(select_step, compulsory_checkers, counter);
             if (!is_correct) {
@@ -65,7 +64,7 @@ void game_t::play() {
                         players[counter]->on_incorrect_attack_step(attack_step);
                         continue;
                     }
-                    check_checkers(compulsory_checkers, compulsory_hit_checkers, counter);
+                    check_one_checker(select_step, compulsory_hit_checkers, counter);
                 }
             }
         }
@@ -194,9 +193,11 @@ bool game_t::apply_attack_step(step_t &select_step, step_t &attack_step,
                     std::swap(select_step, attack_step);
                     return true;
                 }
-                std:: cout << must_hit_checkers.count(std::pair<int, int>(select_step.r - 2, select_step.c)) << std:: endl;
+                std::cout << must_hit_checkers.count(std::pair<int, int>(select_step.r - 2, select_step.c))
+                          << std::endl;
                 if (must_hit_checkers.count(std::pair<int, int>(select_step.r - 2, select_step.c)) &&
-                    select_step.r - 3 == attack_step.r - 1 && select_step.c + 1 == attack_step.c - 1) {  // правый верхний
+                    select_step.r - 3 == attack_step.r - 1 &&
+                    select_step.c + 1 == attack_step.c - 1) {  // правый верхний
                     players[0]->checkers -= 1;
                     field.fld[select_step.r - 2][select_step.c] = '0';
                     std::swap(attack_cell, select_cell);
@@ -205,7 +206,8 @@ bool game_t::apply_attack_step(step_t &select_step, step_t &attack_step,
                 }
 
                 if (must_hit_checkers.count(std::pair<int, int>(select_step.r - 1 + 1, select_step.c - 1 - 1)) &&
-                    select_step.r - 1 + 2 == attack_step.r - 1 && select_step.c - 3 == attack_step.c - 1) { // левый нижний
+                    select_step.r - 1 + 2 == attack_step.r - 1 &&
+                    select_step.c - 3 == attack_step.c - 1) { // левый нижний
                     players[0]->checkers -= 1;
                     field.fld[select_step.r - 1 + 1][select_step.c - 2] = '0';
                     if (select_step.r - 1 == 7) {
@@ -216,7 +218,8 @@ bool game_t::apply_attack_step(step_t &select_step, step_t &attack_step,
                     return true;
                 }
                 if (must_hit_checkers.count(std::pair<int, int>(select_step.r - 1 + 1, select_step.c - 1 + 1)) &&
-                    select_step.r - 1 + 2 == attack_step.r - 1 && select_step.c + 1 == attack_step.c - 1) { // правый нижний
+                    select_step.r - 1 + 2 == attack_step.r - 1 &&
+                    select_step.c + 1 == attack_step.c - 1) { // правый нижний
                     players[0]->checkers -= 1;
                     field.fld[select_step.r][select_step.c] = '0';
                     if (select_step.r - 1 == 7) {
@@ -233,8 +236,8 @@ bool game_t::apply_attack_step(step_t &select_step, step_t &attack_step,
     return false;
 }
 
-void game_t::check_checkers(std::set<std::pair<int, int>> &checkers,
-                            std::set<std::pair<int, int>> &must_hit_checkers, size_t player_num) {
+void game_t::check_all_checkers(std::set<std::pair<int, int>> &checkers,
+                                std::set<std::pair<int, int>> &must_hit_checkers, size_t player_num) {
     checkers.clear();
     must_hit_checkers.clear();
     if (player_num == 0) {
@@ -262,6 +265,9 @@ void game_t::check_checkers(std::set<std::pair<int, int>> &checkers,
                         must_hit_checkers.insert(std::pair<int, int>(i + 1, j + 1));
                     }
                 }
+                if (field.fld[i][j] == 'W') {
+
+                }
 
             }
         }
@@ -276,7 +282,6 @@ void game_t::check_checkers(std::set<std::pair<int, int>> &checkers,
                     }
                     if ((field.fld[i - 1][j + 1] == 'w' || field.fld[i - 1][j + 1] == 'W') &&
                         (field.fld[i - 2][j + 2] == '0')) {// правый верхний
-                        std:: cout << i - 1 << j + 1 << std:: endl;
                         checkers.insert(std::pair<int, int>(i, j));
                         must_hit_checkers.insert(std::pair<int, int>(i - 1, j + 1));
                     }
@@ -297,4 +302,49 @@ void game_t::check_checkers(std::set<std::pair<int, int>> &checkers,
 
 }
 
+void game_t::check_one_checker(const step_t &select_step, std::set<std::pair<int, int>> &must_hit_checkers,
+                               size_t player_num) {
+    must_hit_checkers.clear();
+    int i = select_step.r - 1;
+    int j = select_step.c - 1;
+    if (player_num == 0) {
+        if (field.fld[i][j] == 'w') {
+            if ((field.fld[i - 1][j - 1] == 'b' || field.fld[i - 1][j - 1] == 'B') &&
+                (field.fld[i - 2][j - 2] == '0')) { // левый верхний
+                must_hit_checkers.insert(std::pair<int, int>(i - 1, j - 1));
+            }
+            if ((field.fld[i - 1][j + 1] == 'b' || field.fld[i - 1][j + 1] == 'B') &&
+                (field.fld[i - 2][j + 2] == '0')) { // правый верхний
+                must_hit_checkers.insert(std::pair<int, int>(i - 1, j + 1));
+            }
+            if ((field.fld[i + 1][j - 1] == 'b' || field.fld[i + 1][j - 1] == 'B') &&
+                (field.fld[i + 2][j - 2] == '0')) { // левый нижний
+                must_hit_checkers.insert(std::pair<int, int>(i + 1, j - 1));
+            }
+            if ((field.fld[i + 1][j + 1] == 'b' || field.fld[i - 1][j + 1] == 'B') &&
+                (field.fld[i + 2][j + 2] == '0')) { // правый нижний
+                must_hit_checkers.insert(std::pair<int, int>(i + 1, j + 1));
+            }
+        }
+    } else {
+        if (field.fld[i][j] == 'b') {
+            if ((field.fld[i - 1][j - 1] == 'w' || field.fld[i - 1][j - 1] == 'W') &&
+                (field.fld[i - 2][j - 2] == '0')) {// левый верхний
+                must_hit_checkers.insert(std::pair<int, int>(i - 1, j - 1));
+            }
+            if ((field.fld[i - 1][j + 1] == 'w' || field.fld[i - 1][j + 1] == 'W') &&
+                (field.fld[i - 2][j + 2] == '0')) {// правый верхний
+                must_hit_checkers.insert(std::pair<int, int>(i - 1, j + 1));
+            }
+            if ((field.fld[i + 1][j - 1] == 'w' || field.fld[i + 1][j - 1] == 'W') &&
+                (field.fld[i + 2][j - 2] == '0')) {// левый нижний
+                must_hit_checkers.insert(std::pair<int, int>(i + 1, j - 1));
+            }
+            if ((field.fld[i + 1][j + 1] == 'w' || field.fld[i - 1][j + 1] == 'W') &&
+                (field.fld[i + 2][j + 2] == '0')) {// правый нижний
+                must_hit_checkers.insert(std::pair<int, int>(i + 1, j + 1));
+            }
+        }
+    }
+}
 
