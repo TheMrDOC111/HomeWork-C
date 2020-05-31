@@ -3,7 +3,9 @@
 
 game_t::game_t(const player_t &first, const player_t &second) : field() {
     players.push_back(first);
+    first->player_num = 0;
     players.push_back(second);
+    second->player_num = 1;
 }
 
 bool game_t::apply_select_step(const step_t &step, std::set<std::pair<int, int>> &checkers, size_t player_num) {

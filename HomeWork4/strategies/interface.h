@@ -23,4 +23,6 @@ public:
     virtual void on_tie() = 0;
 
     size_t checkers = 0;
+    size_t player_num = -1;
+
 };

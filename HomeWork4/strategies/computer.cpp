@@ -11,6 +11,7 @@ computer_strategy_t::computer_strategy_t(std::string name) :
 }
 
 step_t computer_strategy_t::select_step(const field_t &field) {
+
     return step_t(0, 0);
 }
 
