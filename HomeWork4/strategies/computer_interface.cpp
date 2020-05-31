@@ -35,3 +35,7 @@ void computer_interface_t::on_incorrect_select_step(const step_t &step) const {
 void computer_interface_t::on_incorrect_move_step(const step_t &step) const {
     assert(false);
 }
+
+void computer_interface_t::on_incorrect_attack_step(const step_t &step) const {
+    assert(false);
+}
