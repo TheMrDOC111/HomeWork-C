@@ -19,4 +19,6 @@ public:
 
 private:
     std::string name;
+    step_t selected_checker;
+
 };

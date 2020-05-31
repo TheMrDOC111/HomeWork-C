@@ -45,7 +45,6 @@ void game_t::play() {
         bool is_correct = false;
         while (!is_correct) {
             check_all_checkers(compulsory_checkers, compulsory_hit_checkers, counter);
-            std::cout << "Must hit count: " << compulsory_checkers.size() << std::endl;
             step_t select_step = players[counter]->select_step(field);
             is_correct = apply_select_step(select_step, compulsory_checkers, counter);
             if (!is_correct) {

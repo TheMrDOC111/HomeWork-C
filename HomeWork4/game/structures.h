@@ -8,6 +8,8 @@ struct step_t {
             r{r},
             c{c} {}
 
+    step_t() {}
+
     int r, c;
 };
 
