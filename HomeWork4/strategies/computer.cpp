@@ -165,8 +165,8 @@ step_t computer_strategy_t::select_step(const field_t &field) {
     }
 
     std::shuffle(checkers.begin(), checkers.end(), std::mt19937(std::random_device()()));
-    std:: cout << "select_step "<< checkers.size() << std::endl;
-    std:: cout << "player "<< name << std::endl;
+//    std:: cout << "select_step "<< checkers.size() << std::endl;
+//    std:: cout << "player "<< name << std::endl;
     selected_checker = checkers[0];
 
     return selected_checker;
@@ -229,7 +229,7 @@ step_t computer_strategy_t::make_step(const field_t &fld) {
         }
     }
     std::shuffle(cells.begin(), cells.end(), std::mt19937(std::random_device()()));
-    std:: cout << "make_step "<< cells.size() << std::endl;
+//    std:: cout << "make_step "<< cells.size() << std::endl;
 
     return cells.front();
 }
