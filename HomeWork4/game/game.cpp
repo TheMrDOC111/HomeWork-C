@@ -4,8 +4,10 @@
 game_t::game_t(const player_t &first, const player_t &second) : field() {
     players.push_back(first);
     first->player_num = 0;
+    first->checkers = 12;
     players.push_back(second);
     second->player_num = 1;
+    second->checkers = 12;
 }
 
 bool game_t::apply_select_step(const step_t &step, std::set<std::pair<int, int>> &checkers, size_t player_num) {
@@ -21,7 +23,165 @@ bool game_t::apply_select_step(const step_t &step, std::set<std::pair<int, int>>
     return false;
 }
 
-game_t::game_outcome_t game_t::is_win() const {
+game_t::game_outcome_t game_t::is_win(size_t counter) const {
+
+    counter = (counter + 1) % 2;
+    bool can_make_step = false;
+    if (counter == 0) {
+        for (int r = 0; r < 8; ++r) {
+            for (int c = 0; c < 8; ++c) {
+                if (field.fld[r][c] == 'W') {
+                    int change_step[2] = {-1, 1};
+                    for (auto &i: change_step) {
+                        for (auto &j: change_step) {
+                            int k = 0;
+                            while (k < 8) {
+                                ++k;
+                                if ((field.fld[r + i * k][c + j * k] == 'b' ||
+                                     field.fld[r + i * k][c + j * k] == 'B') &&
+                                    field.fld[r + i * (k + 1)][c + j * (k + 1)] == '0') {
+                                    can_make_step = true;
+                                    break;
+                                }
+                                if (field.fld[r + i * k][c + j * k] != '0') {
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+
+        for (int r = 0; r < 8; ++r) {
+            for (int c = 0; c < 8; ++c) {
+                if (field.fld[r][c] == 'w') {
+                    if ((field.fld[r - 1][c - 1] == 'b' || field.fld[r - 1][c - 1] == 'B') &&
+                        (field.fld[r - 2][c - 2] == '0')) { // левый верхний
+                        can_make_step = true;
+                    }
+                    if ((field.fld[r - 1][c + 1] == 'b' || field.fld[r - 1][c + 1] == 'B') &&
+                        (field.fld[r - 2][c + 2] == '0')) { // правый верхний
+                        can_make_step = true;
+                    }
+                    if ((field.fld[r + 1][c - 1] == 'b' || field.fld[r + 1][c - 1] == 'B') &&
+                        (field.fld[r + 2][c - 2] == '0')) { // левый нижний
+                        can_make_step = true;
+                    }
+                    if ((field.fld[r + 1][c + 1] == 'b' || field.fld[r + 1][c + 1] == 'B') &&
+                        (field.fld[r + 2][c + 2] == '0')) { // правый нижний
+                        can_make_step = true;
+                    }
+                }
+            }
+        }
+
+        if (!can_make_step) {
+            for (int row = 0; row < 8; ++row) {
+                for (int col = 0; col < 8; ++col) {
+                    if (field.fld[row][col] == 'W') {
+                        if (field.fld[row - 1][col - 1] == '0' || field.fld[row - 1][col + 1] == '0' ||
+                            field.fld[row + 1][col - 1] == '0' || field.fld[row + 1][col + 1] == '0') {
+                            can_make_step = true;
+                        }
+                    }
+                }
+            }
+        }
+
+        if (!can_make_step) {
+            for (int row = 0; row < 8; ++row) {
+                for (int col = 0; col < 8; ++col) {
+                    if (field.fld[row][col] == 'w') {
+                        if (field.fld[row - 1][col - 1] == '0' || field.fld[row - 1][col + 1] == '0') {
+                            can_make_step = true;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    if (counter == 1) {
+
+        for (int r = 0; r < 8; ++r) {
+            for (int c = 0; c < 8; ++c) {
+                if (field.fld[r][c] == 'B') {
+                    int change_step[2] = {-1, 1};
+                    for (auto &i: change_step) {
+                        for (auto &j: change_step) {
+                            int k = 0;
+                            while (k < 8) {
+                                ++k;
+                                if ((field.fld[r + i * k][c + j * k] == 'w' ||
+                                     field.fld[r + i * k][c + j * k] == 'W') &&
+                                    field.fld[r + i * (k + 1)][c + j * (k + 1)] == '0') {
+                                    can_make_step = true;
+                                    break;
+                                }
+                                if (field.fld[r + i * k][c + j * k] != '0') {
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        for (int r = 0; r < 8; ++r) {
+            for (int c = 0; c < 8; ++c) {
+                if (field.fld[r][c] == 'b') {
+                    if ((field.fld[r - 1][c - 1] == 'w' || field.fld[r - 1][c - 1] == 'W') &&
+                        (field.fld[r - 2][c - 2] == '0')) { // левый верхний
+                        can_make_step = true;
+                    }
+                    if ((field.fld[r - 1][c + 1] == 'w' || field.fld[r - 1][c + 1] == 'W') &&
+                        (field.fld[r - 2][c + 2] == '0')) { // правый верхний
+                        can_make_step = true;
+                    }
+                    if ((field.fld[r + 1][c - 1] == 'w' || field.fld[r + 1][c - 1] == 'W') &&
+                        (field.fld[r + 2][c - 2] == '0')) { // левый нижний
+                        can_make_step = true;
+                    }
+                    if ((field.fld[r + 1][c + 1] == 'w' || field.fld[r + 1][c + 1] == 'W') &&
+                        (field.fld[r + 2][c + 2] == '0')) { // правый нижний
+                        can_make_step = true;
+                    }
+                }
+            }
+        }
+
+
+        if (!can_make_step) {
+            for (int row = 0; row < 8; ++row) {
+                for (int col = 0; col < 8; ++col) {
+                    if (field.fld[row][col] == 'B') {
+                        if (field.fld[row - 1][col - 1] == '0' || field.fld[row - 1][col + 1] == '0' ||
+                            field.fld[row + 1][col - 1] == '0' || field.fld[row + 1][col + 1] == '0') {
+                            can_make_step = true;
+                        }
+                    }
+                }
+            }
+        }
+
+        if (!can_make_step) {
+            for (int row = 0; row < 8; ++row) {
+                for (int col = 0; col < 8; ++col) {
+                    if (field.fld[row][col] == 'b') {
+                        if (field.fld[row + 1][col - 1] == '0' || field.fld[row + 1][col + 1] == '0') {
+                            can_make_step = true;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    if (!can_make_step)
+        return WIN;
+
 
     if (counter_steps > 1000) {
         return TIE;
@@ -34,16 +194,32 @@ game_t::game_outcome_t game_t::is_win() const {
     return IN_PROGRESS;
 }
 
+
 void game_t::play() {
     size_t counter = 1;
     counter_steps = 0;
     std::set<std::pair<int, int>> compulsory_checkers; // Обязанные бить
     std::set<std::pair<int, int>> compulsory_hit_checkers; // Обязанные быть побитыми
 
-    while (is_win() == IN_PROGRESS) {
+    while (is_win(counter) == IN_PROGRESS) {
         counter = (counter + 1) % 2;
         bool is_correct = false;
         while (!is_correct) {
+//            std::cout << "Field:" << std::endl;
+//            std::cout << "X|1|2|3|4|5|6|7|8|X" << std::endl;
+//            int k = 1;
+//            for (const auto &line : field.fld) {
+//                std::cout << k << '|';
+//                for (char c : line) {
+//                    std::cout << c << '|';
+//                }
+//                std::cout << k << std::endl;
+//                ++k;
+//            }
+//            std::cout << "X|1|2|3|4|5|6|7|8|X" << std::endl;
+//            std::cout << players[0]->checkers << std::endl;
+//            std::cout << players[1]->checkers << std::endl;
+
             check_all_checkers(compulsory_checkers, compulsory_hit_checkers, counter);
             step_t select_step = players[counter]->select_step(field);
             is_correct = apply_select_step(select_step, compulsory_checkers, counter);
@@ -72,7 +248,7 @@ void game_t::play() {
         }
         ++counter_steps;
     }
-    if (is_win() == TIE) {
+    if (is_win(counter) == TIE) {
         for (const auto &p : players) {
             p->on_tie();
         }
@@ -310,8 +486,7 @@ bool game_t::apply_attack_step(step_t &select_step, step_t &attack_step,
                     std::swap(select_step, attack_step);
                     return true;
                 }
-                std::cout << must_hit_checkers.count(std::pair<int, int>(select_step.r - 2, select_step.c))
-                          << std::endl;
+
                 if (must_hit_checkers.count(std::pair<int, int>(select_step.r - 2, select_step.c)) &&
                     select_step.r - 3 == attack_step.r - 1 &&
                     select_step.c + 1 == attack_step.c - 1) {  // правый верхний
@@ -477,8 +652,12 @@ void game_t::check_all_checkers(std::set<std::pair<int, int>> &checkers,
     must_hit_checkers.clear();
     for (int i = 0; i < 8; ++i) {
         for (int j = 0; j < 8; ++j) {
-            if (check_one_checker(step_t(i + 1, j + 1), must_hit_checkers, player_num))
+            if ((i + j) % 2 == 0) {
+                continue;
+            }
+            if (check_one_checker(step_t(i + 1, j + 1), must_hit_checkers, player_num)) {
                 checkers.insert(std::pair<int, int>(i, j));
+            }
         }
     }
 }
@@ -508,23 +687,27 @@ bool game_t::check_one_checker(const step_t &select_step, std::set<std::pair<int
                 must_hit_checkers.insert(std::pair<int, int>(r + 1, c - 1));
                 flag = true;
             }
-            if ((field.fld[r + 1][c + 1] == 'b' || field.fld[r - 1][c + 1] == 'B') &&
+            if ((field.fld[r + 1][c + 1] == 'b' || field.fld[r + 1][c + 1] == 'B') &&
                 (field.fld[r + 2][c + 2] == '0')) { // правый нижний
                 must_hit_checkers.insert(std::pair<int, int>(r + 1, c + 1));
                 flag = true;
             }
         }
+
         if (field.fld[r][c] == 'W') {
             while (i < 8 || j < 8) { // right down
                 ++i;
                 ++j;
                 if (field.fld[i][j] == 'w' || field.fld[i][j] == 'W')
                     break;
-                if ((field.fld[i][j] == 'b' || field.fld[i][j] == 'B') && field.fld[i + 1][j + 1] == '0') {
-                    must_hit_checkers.insert(std::pair<int, int>(i, j));
-                    flag = true;
-                    break;
-                }
+                if (field.fld[i][j] == 'b' || field.fld[i][j] == 'B')
+                    if (field.fld[i + 1][j + 1] == '0') {
+                        must_hit_checkers.insert(std::pair<int, int>(i, j));
+                        flag = true;
+                        break;
+                    } else {
+                        break;
+                    }
 
             }
             i = r;
@@ -534,11 +717,14 @@ bool game_t::check_one_checker(const step_t &select_step, std::set<std::pair<int
                 --j;
                 if (field.fld[i][j] == 'w' || field.fld[i][j] == 'W')
                     break;
-                if ((field.fld[i][j] == 'b' || field.fld[i][j] == 'B') && field.fld[i + 1][j - 1] == '0') {
-                    must_hit_checkers.insert(std::pair<int, int>(i, j));
-                    flag = true;
-                    break;
-                }
+                if (field.fld[i][j] == 'b' || field.fld[i][j] == 'B')
+                    if (field.fld[i + 1][j - 1] == '0') {
+                        must_hit_checkers.insert(std::pair<int, int>(i, j));
+                        flag = true;
+                        break;
+                    } else {
+                        break;
+                    }
 
             }
             i = r;
@@ -548,11 +734,14 @@ bool game_t::check_one_checker(const step_t &select_step, std::set<std::pair<int
                 --j;
                 if (field.fld[i][j] == 'w' || field.fld[i][j] == 'W')
                     break;
-                if ((field.fld[i][j] == 'b' || field.fld[i][j] == 'B') && field.fld[i - 1][j - 1] == '0') {
-                    must_hit_checkers.insert(std::pair<int, int>(i, j));
-                    flag = true;
-                    break;
-                }
+                if (field.fld[i][j] == 'b' || field.fld[i][j] == 'B')
+                    if (field.fld[i - 1][j - 1] == '0') {
+                        must_hit_checkers.insert(std::pair<int, int>(i, j));
+                        flag = true;
+                        break;
+                    } else {
+                        break;
+                    }
 
             }
             i = r;
@@ -562,11 +751,14 @@ bool game_t::check_one_checker(const step_t &select_step, std::set<std::pair<int
                 ++j;
                 if (field.fld[i][j] == 'w' || field.fld[i][j] == 'W')
                     break;
-                if ((field.fld[i][j] == 'b' || field.fld[i][j] == 'B') && field.fld[i - 1][j + 1] == '0') {
-                    must_hit_checkers.insert(std::pair<int, int>(i, j));
-                    flag = true;
-                    break;
-                }
+                if (field.fld[i][j] == 'b' || field.fld[i][j] == 'B')
+                    if (field.fld[i - 1][j + 1] == '0') {
+                        must_hit_checkers.insert(std::pair<int, int>(i, j));
+                        flag = true;
+                        break;
+                    } else {
+                        break;
+                    }
 
             }
         }
@@ -579,6 +771,7 @@ bool game_t::check_one_checker(const step_t &select_step, std::set<std::pair<int
             }
             if ((field.fld[r - 1][c + 1] == 'w' || field.fld[r - 1][c + 1] == 'W') &&
                 (field.fld[r - 2][c + 2] == '0')) {// правый верхний
+
                 must_hit_checkers.insert(std::pair<int, int>(r - 1, c + 1));
                 flag = true;
             }
@@ -587,7 +780,7 @@ bool game_t::check_one_checker(const step_t &select_step, std::set<std::pair<int
                 must_hit_checkers.insert(std::pair<int, int>(r + 1, c - 1));
                 flag = true;
             }
-            if ((field.fld[r + 1][c + 1] == 'w' || field.fld[r - 1][c + 1] == 'W') &&
+            if ((field.fld[r + 1][c + 1] == 'w' || field.fld[r + 1][c + 1] == 'W') &&
                 (field.fld[r + 2][c + 2] == '0')) {// правый нижний
                 must_hit_checkers.insert(std::pair<int, int>(r + 1, c + 1));
                 flag = true;
@@ -599,12 +792,14 @@ bool game_t::check_one_checker(const step_t &select_step, std::set<std::pair<int
                 ++j;
                 if (field.fld[i][j] == 'b' || field.fld[i][j] == 'B')
                     break;
-                if ((field.fld[i][j] == 'w' || field.fld[i][j] == 'W') && field.fld[i + 1][j + 1] == '0') {
-                    std::cout << field.fld[i][j] << std::endl;
-                    must_hit_checkers.insert(std::pair<int, int>(i, j));
-                    flag = true;
-                    break;
-                }
+                if (field.fld[i][j] == 'w' || field.fld[i][j] == 'W')
+                    if (field.fld[i + 1][j + 1] == '0') {
+                        must_hit_checkers.insert(std::pair<int, int>(i, j));
+                        flag = true;
+                        break;
+                    } else {
+                        break;
+                    }
 
             }
             i = r;
@@ -614,11 +809,14 @@ bool game_t::check_one_checker(const step_t &select_step, std::set<std::pair<int
                 --j;
                 if (field.fld[i][j] == 'b' || field.fld[i][j] == 'B')
                     break;
-                if ((field.fld[i][j] == 'w' || field.fld[i][j] == 'W') && field.fld[i + 1][j - 1] == '0') {
-                    must_hit_checkers.insert(std::pair<int, int>(i, j));
-                    flag = true;
-                    break;
-                }
+                if (field.fld[i][j] == 'w' || field.fld[i][j] == 'W')
+                    if (field.fld[i + 1][j - 1] == '0') {
+                        must_hit_checkers.insert(std::pair<int, int>(i, j));
+                        flag = true;
+                        break;
+                    } else {
+                        break;
+                    }
 
             }
             i = r;
@@ -628,11 +826,14 @@ bool game_t::check_one_checker(const step_t &select_step, std::set<std::pair<int
                 --j;
                 if (field.fld[i][j] == 'b' || field.fld[i][j] == 'B')
                     break;
-                if ((field.fld[i][j] == 'w' || field.fld[i][j] == 'W') && field.fld[i - 1][j - 1] == '0') {
-                    must_hit_checkers.insert(std::pair<int, int>(i, j));
-                    flag = true;
-                    break;
-                }
+                if (field.fld[i][j] == 'w' || field.fld[i][j] == 'W')
+                    if (field.fld[i - 1][j - 1] == '0') {
+                        must_hit_checkers.insert(std::pair<int, int>(i, j));
+                        flag = true;
+                        break;
+                    } else {
+                        break;
+                    }
 
             }
             i = r;
@@ -642,11 +843,14 @@ bool game_t::check_one_checker(const step_t &select_step, std::set<std::pair<int
                 ++j;
                 if (field.fld[i][j] == 'b' || field.fld[i][j] == 'B')
                     break;
-                if ((field.fld[i][j] == 'w' || field.fld[i][j] == 'W') && field.fld[i - 1][j + 1] == '0') {
-                    must_hit_checkers.insert(std::pair<int, int>(i, j));
-                    flag = true;
-                    break;
-                }
+                if (field.fld[i][j] == 'w' || field.fld[i][j] == 'W')
+                    if (field.fld[i - 1][j + 1] == '0') {
+                        must_hit_checkers.insert(std::pair<int, int>(i, j));
+                        flag = true;
+                        break;
+                    } else {
+                        break;
+                    }
 
             }
         }

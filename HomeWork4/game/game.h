@@ -23,7 +23,7 @@ private:
         IN_PROGRESS
     };
 
-    game_outcome_t is_win() const;
+    game_outcome_t is_win(size_t counter) const;
 
     bool apply_select_step(const step_t &step, std::set<std::pair<int, int>> &checkers, size_t player_num);
 
@@ -35,9 +35,10 @@ private:
     void check_all_checkers(std::set<std::pair<int, int>> &checkers,
                             std::set<std::pair<int, int>> &must_hit_checkers,
                             size_t player_num);
+
     bool check_one_checker(const step_t &select_step,
-                            std::set<std::pair<int, int>> &must_hit_checkers,
-                            size_t player_num);
+                           std::set<std::pair<int, int>> &must_hit_checkers,
+                           size_t player_num);
 
 
     field_t field;

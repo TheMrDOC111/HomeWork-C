@@ -20,6 +20,8 @@ struct field_t {
                 if ((row + col) % 2 == 0) {
                     fld[row][col] = '.';
                     continue;
+                }else{
+                    fld[row][col] = '0';
                 }
                 if (row < 3) {
                     fld[row][col] = 'b';
@@ -30,6 +32,8 @@ struct field_t {
                 }
             }
         }
+
+
     }
 
     char fld[8][8];

@@ -64,7 +64,6 @@ step_t human_strategy_t::attack_step(const field_t &field) {
 
 human_strategy_t::human_strategy_t(std::string name) :
         name(std::move(name)) {
-    checkers = 12;
 }
 
 void human_strategy_t::on_incorrect_move_step(const step_t &step) const {
