@@ -205,20 +205,7 @@ void game_t::play() {
         counter = (counter + 1) % 2;
         bool is_correct = false;
         while (!is_correct) {
-//            std::cout << "Field:" << std::endl;
-//            std::cout << "X|1|2|3|4|5|6|7|8|X" << std::endl;
-//            int k = 1;
-//            for (const auto &line : field.fld) {
-//                std::cout << k << '|';
-//                for (char c : line) {
-//                    std::cout << c << '|';
-//                }
-//                std::cout << k << std::endl;
-//                ++k;
-//            }
-//            std::cout << "X|1|2|3|4|5|6|7|8|X" << std::endl;
-//            std::cout << players[0]->checkers << std::endl;
-//            std::cout << players[1]->checkers << std::endl;
+
 
             check_all_checkers(compulsory_checkers, compulsory_hit_checkers, counter);
             step_t select_step = players[counter]->select_step(field);
@@ -234,10 +221,29 @@ void game_t::play() {
                     players[counter]->on_incorrect_move_step(move_step);
                 }
             } else {
+                int c = 0;
                 while (!compulsory_hit_checkers.empty()) {
+                    ++c;
                     step_t attack_step = players[counter]->attack_step(field);
                     is_correct = apply_attack_step(select_step, attack_step, compulsory_hit_checkers, counter);
                     if (!is_correct) {
+                        std::cout << c  << std:: endl;
+                        std::cout << "select: "<< select_step.r << ' ' << select_step.c << std::endl;
+                        std::cout << "attack: "<< attack_step.r << ' ' << attack_step.c << std::endl;
+                        std::cout << "Field:" << std::endl;
+                        std::cout << "X|1|2|3|4|5|6|7|8|X" << std::endl;
+                        int k = 1;
+                        for (const auto &line : field.fld) {
+                            std::cout << k << '|';
+                            for (char c : line) {
+                                std::cout << c << '|';
+                            }
+                            std::cout << k << std::endl;
+                            ++k;
+                        }
+                        std::cout << "X|1|2|3|4|5|6|7|8|X" << std::endl;
+                        std:: cout << counter << std::endl;
+
                         players[counter]->on_incorrect_attack_step(attack_step);
                         continue;
                     }

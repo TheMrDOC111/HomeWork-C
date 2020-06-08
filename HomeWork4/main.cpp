@@ -10,7 +10,7 @@ int main() {
   auto player1 = std::make_shared<computer_strategy_t>("First player");
   auto player2 = std::make_shared<computer_strategy_second_t>("Second player");
 
-  for (int i = 0; i < 30; ++i) {
+  for (int i = 0; i < 1000; ++i) {
     game_t game(player1, player2);
     game.play();
   }

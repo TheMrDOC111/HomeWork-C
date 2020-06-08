@@ -16,14 +16,15 @@ void human_strategy_t::on_tie() {
 
 step_t human_strategy_t::make_step(const field_t &fld) {
     std::cout << name << " - type coordinates to move: " << std::endl;
-    int x, y;
-    std::cin >> x >> y;
-    return {x, y};
+    int r;
+    char c;
+    std::cin >> c >> r;
+    return {r, ((int)c-64)};
 }
 
 step_t human_strategy_t::select_step(const field_t &field) {
     std::cout << "Field:" << std::endl;
-    std::cout << "X|1|2|3|4|5|6|7|8|X" << std::endl;
+    std::cout << "X|A|B|C|D|E|F|G|H|X" << std::endl;
     int k = 1;
     for (const auto &line : field.fld) {
         std::cout << k << '|';
@@ -33,18 +34,22 @@ step_t human_strategy_t::select_step(const field_t &field) {
         std::cout << k << std::endl;
         ++k;
     }
-    std::cout << "X|1|2|3|4|5|6|7|8|X" << std::endl;
+    std::cout << "X|A|B|C|D|E|F|G|H|X" << std::endl;
+
+
 
     std::cout << name << " - select checker: " << std::endl;
-    int x, y;
-    std::cin >> x >> y;
-    return {x, y};
+    int r;
+    char c;
+    std::cin >> c >> r;
+    return {r, ((int)c-64)};
 }
 
 step_t human_strategy_t::attack_step(const field_t &field) {
 
     std::cout << "Field:" << std::endl;
-    std::cout << "X|1|2|3|4|5|6|7|8|X" << std::endl;
+    std::cout << "X|A|B|C|D|E|F|G|H|X" << std::endl;
+
     int k = 1;
     for (const auto &line : field.fld) {
         std::cout << k << '|';
@@ -54,12 +59,16 @@ step_t human_strategy_t::attack_step(const field_t &field) {
         std::cout << k << std::endl;
         ++k;
     }
-    std::cout << "X|1|2|3|4|5|6|7|8|X" << std::endl;
+    std::cout << "X|A|B|C|D|E|F|G|H|X" << std::endl;
+
+
+
 
     std::cout << name << " - type coordinates to attack: " << std::endl;
-    int x, y;
-    std::cin >> x >> y;
-    return {x, y};
+    int r;
+    char c;
+    std::cin >> c >> r;
+    return {r, ((int)c-64)};
 }
 
 human_strategy_t::human_strategy_t(std::string name) :
@@ -67,14 +76,14 @@ human_strategy_t::human_strategy_t(std::string name) :
 }
 
 void human_strategy_t::on_incorrect_move_step(const step_t &step) const {
-    std::cout << name << " - incorrect move step: row: " << step.r << "; col: " << step.c << std::endl;
+    std::cout << name << " - incorrect move step: row: " << step.c << "; col: " << step.r << std::endl;
 }
 
 void human_strategy_t::on_incorrect_select_step(const step_t &step) const {
-    std::cout << name << " - incorrect select step: row: " << step.r << "; col: " << step.c << std::endl;
+    std::cout << name << " - incorrect select step: row: " << step.c << "; col: " << step.r << std::endl;
 }
 
 void human_strategy_t::on_incorrect_attack_step(const step_t &step) const {
-    std::cout << name << " - incorrect attack step: row: " << step.r << "; col: " << step.c << std::endl;
+    std::cout << name << " - incorrect attack step: row: " << step.c << "; col: " << step.r << std::endl;
 }
 

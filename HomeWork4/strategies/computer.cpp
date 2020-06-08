@@ -250,6 +250,10 @@ step_t computer_strategy_t::attack_step(const field_t &field) {
                     while (k < 8) {
                         ++k;
 
+                        if (field.fld[r + i * k][c + j * k] == 'W' || field.fld[r + i * k][c + j * k] == 'w') {
+                            break;
+                        }
+
                         if (found && field.fld[r + i * k][c + j * k] != '0') {
                             break;
                         }
@@ -296,7 +300,10 @@ step_t computer_strategy_t::attack_step(const field_t &field) {
                     bool found = false;
                     while (k < 8) {
                         ++k;
-
+                        if (field.fld[r + i * k][c + j * k] == 'B' || field.fld[r + i * k][c + j * k] == 'b') {
+                            std::cout<< "GG" << std::endl;
+                            break;
+                        }
                         if (found && field.fld[r + i * k][c + j * k] != '0') {
                             break;
                         }
