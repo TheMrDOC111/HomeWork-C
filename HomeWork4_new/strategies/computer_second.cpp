@@ -127,23 +127,6 @@ step_t computer_second_strategy_t::attack_step(const field_t &field) {
             }
         }
     }
-//    std::shuffle(cells.begin(), cells.end(), std::mt19937(std::random_device()()));
-//    std::cout << cell << " " << selected_checker.r << " " << selected_checker.c << std::endl;
-//    std::cout << "Field:" << std::endl;
-//    std::cout << " |0|1|2|3|4|5|6|7|" << std::endl;
-//
-//    int k = 0;
-//    for (const auto &line : field.fld) {
-//        std::cout << k << '|';
-//        for (char c : line) {
-//            std::cout << c << '|';
-//        }
-//        std::cout << std::endl;
-//        ++k;
-//    }
-//    std::cout << "SOSU" << std::endl;
-//    std::cout << cells.size() << std::endl;
-//    std::cout << "TUT" << std::endl;
     selected_checker = cells.front();
 
     return selected_checker;
